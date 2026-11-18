@@ -17,6 +17,12 @@ resource "cloudflare_zero_trust_access_application" "univerlab_audits" {
     { type = "public", uri = "univerlab.org/sign/owner" },
     { type = "public", uri = "univerlab.org/es/sign/owner" },
     { type = "public", uri = "univerlab.org/api/sign-request" },
+    # The signer's side: the link page, the PDF and the signature need the
+    # signer's verified email, which the site compares with the request.
+    { type = "public", uri = "univerlab.org/sign/*" },
+    { type = "public", uri = "univerlab.org/es/sign/*" },
+    { type = "public", uri = "univerlab.org/api/sign-file" },
+    { type = "public", uri = "univerlab.org/api/sign-complete" },
   ]
   # App-scoped policy "Any verified email; the site checks each audit's list":
   # Access lets any verified email in, the site checks each audit's own list.
