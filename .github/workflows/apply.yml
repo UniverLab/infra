@@ -1,0 +1,63 @@
+name: Apply
+
+# Run by hand on main after the PR is merged, one stack or all, behind the
+# production environment's approval. It plans again and applies that plan.
+on:
+  workflow_dispatch:
+    inputs:
+      stack:
+        description: Stack to apply (or "all")
+        required: true
+        type: choice
+        options: [all, dns, storage, access, pages, workers, atmosferas]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apply
+  cancel-in-progress: false
+
+jobs:
+  stacks:
+    name: Stacks
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    outputs:
+      stacks: ${{ steps.pick.outputs.stacks }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: pick
+        env:
+          STACK: ${{ inputs.stack }}
+        run: |
+          if [ "$STACK" = all ]; then picked=$(ls stacks); else picked=$STACK; fi
+          echo "stacks=$(printf '%s\n' $picked | jq -R . | jq -cs .)" >> "$GITHUB_OUTPUT"
+
+  apply:
+    name: Apply ${{ matrix.stack }}
+    needs: stacks
+    runs-on: ubuntu-latest
+    environment: production
+    strategy:
+      max-parallel: 1
+      matrix:
+        stack: ${{ fromJson(needs.stacks.outputs.stacks) }}
+    defaults:
+      run:
+        working-directory: stacks/${{ matrix.stack }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      TF_VAR_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      TF_IN_AUTOMATION: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+          terraform_wrapper: false
+      - run: terraform init -input=false -backend-config="endpoints={s3=\"${{ vars.R2_ENDPOINT }}\"}"
+      - run: terraform plan -input=false -no-color -out=apply.tfplan
+      - run: terraform apply -input=false -no-color apply.tfplan
