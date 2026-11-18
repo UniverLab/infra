@@ -16,14 +16,15 @@ and applies only what it touches.
 | `storage` | R2 buckets and KV namespaces |
 | `access` | Cloudflare Access applications and Turnstile widgets |
 | `pages` | Pages projects `univerlab` and `quorum`: settings, bindings, plain variables |
-| `workers` | Workers custom domains and routes not declared in a `wrangler.toml` |
+| `workers` | Every Workers custom domain and route (get, install, graphs, announcements, remote). `wrangler.toml` files declare none |
 | `atmosferas` | The `atmosferas` Pages project (personal project, kept apart) |
 
 `shared/` holds the provider and variables every stack links to.
 
 Outside Terraform on purpose:
-- **Worker code and the bindings in each repo's `wrangler.toml`** are deployed
-  by that repo's workflow with wrangler.
+- **Worker code and its bindings** (`wrangler.toml` in each repo) are uploaded
+  by that repo's deploy workflow with wrangler. Domains and routes are not in
+  any `wrangler.toml`: they are here, so a deploy never fights Terraform.
 - **Secrets** (API keys, tokens, signing keys) never go in this repo or its
   state. They live in GitHub secrets and reach Workers and Pages through the
   deploy workflows (`wrangler secret` / `pages secret`).
