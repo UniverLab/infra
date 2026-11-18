@@ -24,11 +24,24 @@ resource "cloudflare_pages_project" "univerlab" {
           type  = "plain_text"
           value = "univerlab.cloudflareaccess.com"
         }
+        # Who may open the signing console and create requests.
+        SIGN_OWNER_EMAILS = {
+          type  = "plain_text"
+          value = var.sign_owner_emails
+        }
+        # Sends the signing invitations and receipts (firma@univerlab.org).
+        RESEND_API_KEY = {
+          type  = "secret_text"
+          value = var.resend_api_key
+        }
       }
       fail_open = true
       r2_buckets = {
         AUDITS = {
           name = "univerlab-audits"
+        }
+        SIGN_DOCS = {
+          name = "univerlab-sign"
         }
       }
       usage_model = "standard"
