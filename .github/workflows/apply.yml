@@ -26,7 +26,7 @@ jobs:
     outputs:
       stacks: ${{ steps.pick.outputs.stacks }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: pick
         env:
           STACK: ${{ inputs.stack }}
@@ -54,8 +54,8 @@ jobs:
       TF_VAR_resend_api_key: ${{ secrets.RESEND_API_KEY }}
       TF_IN_AUTOMATION: "1"
     steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: 1.9.8
           terraform_wrapper: false
