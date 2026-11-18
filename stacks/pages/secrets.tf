@@ -1,7 +1,7 @@
 variable "sign_owner_emails" {
   description = "Comma-separated addresses allowed to run the signing console."
   type        = string
-  default     = "jheison.mb@gmail.com"
+  default     = "jheison.mb@gmail.com,hola@univerlab.org"
 }
 
 variable "resend_api_key" {
