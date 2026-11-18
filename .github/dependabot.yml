@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: terraform
+    directories:
+      - /stacks/*
+    schedule:
+      interval: weekly
+    groups:
+      cloudflare-provider:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore(deps)"
