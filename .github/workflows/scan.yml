@@ -19,8 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: terraform-linters/setup-tflint@v4
-      - run: tflint --init
-      - run: tflint --recursive --format compact
+      - run: tflint --init --config "$GITHUB_WORKSPACE/.tflint.hcl"
+      - run: tflint --recursive --config "$GITHUB_WORKSPACE/.tflint.hcl" --format compact
 
   trivy:
     name: Trivy config scan
