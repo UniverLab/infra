@@ -61,8 +61,7 @@ terraform plan
 ## Adopting existing resources
 
 Everything was imported from the live account with `cf-terraforming` on
-2026-11-18; `imports.tf` in each stack holds the import blocks until the first
-apply has recorded them in state, then it is deleted. To adopt something else
+2026-11-18 and the import blocks were removed once applied. To adopt something else
 later: `cf-terraforming generate` + `import --modern-import-block` for that
 resource type, move the result into the right stack, and plan until it shows
 only imports.
