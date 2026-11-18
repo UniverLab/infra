@@ -25,9 +25,11 @@ Outside Terraform on purpose:
 - **Worker code and its bindings** (`wrangler.toml` in each repo) are uploaded
   by that repo's deploy workflow with wrangler. Domains and routes are not in
   any `wrangler.toml`: they are here, so a deploy never fights Terraform.
-- **Secrets** (API keys, tokens, signing keys) never go in this repo or its
-  state. They live in GitHub secrets and reach Workers and Pages through the
-  deploy workflows (`wrangler secret` / `pages secret`).
+- **Secrets** never go in this repo. Worker secrets reach Workers through each
+  repo's deploy workflow (`wrangler secret`). The few Pages secrets this repo
+  manages (e.g. `RESEND_API_KEY`) come from GitHub secrets as sensitive
+  `TF_VAR_*` variables, so they are stored in the state bucket, which only the
+  scoped R2 credentials can read.
 - **The state bucket** `univerlab-tfstate` itself (bootstrap).
 
 ## Flow (trunk-based)
@@ -46,6 +48,7 @@ Outside Terraform on purpose:
 |---|---|---|
 | `CLOUDFLARE_API_TOKEN` | secret | Scoped API token "infra terraform": DNS, email routing, workers routes, zone read on univerlab.org; Access apps, Pages, R2, KV, Turnstile, Workers scripts on the account |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | secret | R2 S3 credentials limited to the `univerlab-tfstate` bucket |
+| `RESEND_API_KEY` | secret | The site's mail key, set on the `univerlab` Pages project |
 | `CLOUDFLARE_ACCOUNT_ID`, `R2_ENDPOINT` | variable | Account id and the R2 S3 endpoint |
 
 Locally the same values live in `~/.config/univerlab/infra.env` (mode 600):
