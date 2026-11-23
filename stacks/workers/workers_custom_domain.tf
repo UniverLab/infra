@@ -42,3 +42,14 @@ resource "cloudflare_workers_custom_domain" "announcements_univerlab_org" {
   zone_id          = var.zone_id
   zone_name        = "univerlab.org"
 }
+
+resource "cloudflare_workers_custom_domain" "booking_univerlab_org" {
+  account_id       = var.account_id
+  enabled          = true
+  environment      = "production"
+  hostname         = "booking.univerlab.org"
+  previews_enabled = false
+  service          = "univerlab-booking"
+  zone_id          = var.zone_id
+  zone_name        = "univerlab.org"
+}
