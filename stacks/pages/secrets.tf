@@ -9,3 +9,10 @@ variable "resend_api_key" {
   type        = string
   sensitive   = true
 }
+
+variable "cf_analytics_token" {
+  description = "Cloudflare read-only Account Analytics token for /api/admin-analytics (GitHub secret CF_ANALYTICS_TOKEN, passed as TF_VAR_cf_analytics_token)."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
