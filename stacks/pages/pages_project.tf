@@ -15,26 +15,44 @@ resource "cloudflare_pages_project" "univerlab" {
       always_use_latest_compatibility_date = false
       build_image_major_version            = 3
       compatibility_date                   = "2026-07-11"
-      env_vars = {
-        ACCESS_AUD = {
-          type  = "plain_text"
-          value = "62f4259e71259af3dbb124fbb67df4f62e9fd339dd9fdef4becb996ad9e01990"
-        }
-        ACCESS_TEAM_DOMAIN = {
-          type  = "plain_text"
-          value = "univerlab.cloudflareaccess.com"
-        }
-        # Who may open the signing console and create requests.
-        SIGN_OWNER_EMAILS = {
-          type  = "plain_text"
-          value = var.sign_owner_emails
-        }
-        # Sends the signing invitations and receipts (firma@univerlab.org).
-        RESEND_API_KEY = {
-          type  = "secret_text"
-          value = var.resend_api_key
+      analytics_engine_datasets = {
+        FUNNEL = {
+          dataset = "univerlab_funnel"
         }
       }
+      env_vars = merge(
+        {
+          ACCESS_AUD = {
+            type  = "plain_text"
+            value = "62f4259e71259af3dbb124fbb67df4f62e9fd339dd9fdef4becb996ad9e01990"
+          }
+          ACCESS_TEAM_DOMAIN = {
+            type  = "plain_text"
+            value = "univerlab.cloudflareaccess.com"
+          }
+          # Who may open the signing console and create requests.
+          SIGN_OWNER_EMAILS = {
+            type  = "plain_text"
+            value = var.sign_owner_emails
+          }
+          # Sends the signing invitations and receipts (firma@univerlab.org).
+          RESEND_API_KEY = {
+            type  = "secret_text"
+            value = var.resend_api_key
+          }
+          # Account id for the control room's read-only Analytics Engine SQL queries.
+          CF_ACCOUNT_ID = {
+            type  = "plain_text"
+            value = var.account_id
+          }
+        },
+        var.cf_analytics_token != "" ? {
+          CF_ANALYTICS_TOKEN = {
+            type  = "secret_text"
+            value = var.cf_analytics_token
+          }
+        } : {}
+      )
       fail_open = true
       r2_buckets = {
         AUDITS = {

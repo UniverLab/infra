@@ -23,6 +23,7 @@ resource "cloudflare_zero_trust_access_application" "univerlab_audits" {
     { type = "public", uri = "univerlab.org/api/admin-audits" },
     { type = "public", uri = "univerlab.org/api/admin-visibility" },
     { type = "public", uri = "univerlab.org/api/admin-remove" },
+    { type = "public", uri = "univerlab.org/api/admin-analytics" },
     # The signer's side: the link page, the PDF and the signature need the
     # signer's verified email, which the site compares with the request.
     { type = "public", uri = "univerlab.org/sign/*" },
